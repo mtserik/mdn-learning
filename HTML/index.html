@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+
+    <title>Number guessing game</title>
+
+    <style>
+      html {
+        font-family: sans-serif;
+      }
+
+      body {
+        width: 50%;
+        max-width: 800px;
+        min-width: 480px;
+        margin: 0 auto;
+      }
+      
+      .form input[type="number"] {
+        width: 200px;
+      }
+
+      .lastResult {
+        color: white;
+        padding: 3px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>Number guessing game</h1>
+
+    <p>We have selected a random number between 1 and 100. See if you can guess it in 10 turns or fewer. We'll tell you if your guess was too high or too low.</p>
+
+    <div class="form">
+      <label for="guessField">Enter a guess: </label>
+      <input type="number" min="1" max="100" required id="guessField" class="guessField">
+      <input type="submit" value="Submit guess" class="guessSubmit">
+    </div>
+
+    <div class="resultParas">
+      <p class="guesses"></p>
+      <p class="lastResult"></p>
+      <p class="lowOrHi"></p>
+    </div>
+
+    <script>
+      //Define a variável onde iremos gerar um número aleatório
+      var numeroAleatorio = Math.floor(Math.random() * 100) + 1;
+      
+      //Define variaveis onde imprimiremos os paragráfos
+      var palpites = document.querySelector('.guesses');
+      var ultimoResultado = document.querySelector('.lastResult');
+      var baixoOuAlto = document.querySelector('.lowOrHi');
+
+      //Define variaveis dos campos do formulário
+      var envioPalpite = document.querySelector('.guessSubmit');
+      var campoPalpite = document.querySelector('.guessField');
+
+      //Define variaveis de contagem e reinicio
+      var contagemPalpites = 1;
+      var botaoReinicio;
+
+      //Criando a função que irá conferir os palpites
+      function conferirPalpite() {
+        //Define o palpite do usuário e valida se o valor inserido é número
+        var palpiteUsuario = Number(campoPalpite.value);
+        //Valida se é o primeiro palpite, se for adiciona o texto de palpites anteriores
+        if (contagemPalpites === 1) {
+          palpites.textContent = 'Palpites anteriores: ';
+        }
+        //Adiciona os palpites do usuário
+        palpites.textContent += palpiteUsuario + ' ';
+
+        //Valida se o palpite é igual ao número aleatório, se for parabeniza o usuário e reseta
+        if (palpiteUsuario === numeroAleatorio) {
+          ultimoResultado.textContent = 'Parabéns! Você acertou!';
+          ultimoResultado.style.backgroundColor = 'green';
+          baixoOuAlto.textContent = '';
+          configFimDeJogo();
+          //Se for o palpite 10 finaliza o jogo e reseta
+        } else if (contagemPalpites === 10) {
+          ultimoResultado.textContent = '!!!FIM DE JOGO!!!';
+          baixoOuAlto.textContent = '';
+          configFimDeJogo();
+          //Se não for nenhum dos casos, informa que errou e valida se o número é maior ou menor
+        } else {
+          ultimoResultado.textContent = 'Errado!';
+          ultimoResultado.style.backgroundColor = 'red';
+          if(palpiteUsuario < numeroAleatorio) {
+            baixoOuAlto.textContent = 'Seu palpite está muito baixo!';
+          } else if (palpiteUsuario > numeroAleatorio) {
+            baixoOuAlto.textContent = 'Seu palpite está muito alto!';
+          }
+        }
+
+        //Soma a contagem de palpites, limpa o campo e coloca em foco
+        contagemPalpites++;
+        campoPalpite.value = '';
+        campoPalpite.focus();
+
+      }
+
+      //Adicionando um "Escutador de eventos" para validar se o submit foi clicado
+      envioPalpite.addEventListener('click', conferirPalpite);
+
+    </script>
+  </body>
+</html>
